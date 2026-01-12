@@ -608,6 +608,80 @@ backend/
 
 ---
 
+## Phase 6.5: Early Backend Deployment
+
+**Objective:** Deploy minimal API early to catch deployment issues before full integration
+
+**Rationale:** Deploying early allows us to identify and fix deployment configuration issues (Docker, environment variables, platform-specific quirks) when the codebase is smaller and easier to debug.
+
+### Tasks:
+
+#### 6.5.1: Minimal Backend Setup
+- [ ] Create `Dockerfile` for backend
+  ```dockerfile
+  FROM python:3.10-slim
+  
+  WORKDIR /app
+  
+  COPY requirements.txt .
+  RUN pip install --no-cache-dir -r requirements.txt
+  
+  COPY . .
+  
+  CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+  ```
+- [ ] Create `.dockerignore` to exclude unnecessary files
+- [ ] Test Docker build locally
+  ```bash
+  docker build -t injury-api .
+  docker run -p 8000:8000 injury-api
+  ```
+
+#### 6.5.2: Deploy to Railway/Render
+- [ ] Create account on Railway or Render
+- [ ] Create new project/service
+- [ ] Connect GitHub repository
+- [ ] Configure build settings:
+  - Build command: `pip install -r requirements.txt`
+  - Start command: `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
+- [ ] Set environment variables (if needed)
+  - `ENVIRONMENT=development`
+- [ ] Deploy backend
+- [ ] Verify deployment:
+  - Health check endpoint works: `https://your-api.railway.app/health`
+  - OpenAPI docs accessible: `https://your-api.railway.app/docs`
+  - API responds correctly
+
+#### 6.5.3: Fix Deployment Issues
+- [ ] Document any platform-specific issues encountered
+- [ ] Fix port configuration (Railway/Render may use `$PORT` env var)
+- [ ] Fix file path issues (absolute vs relative paths)
+- [ ] Fix dependency installation issues
+- [ ] Test with sample API calls (use curl or Postman)
+
+#### 6.5.4: Document Deployment Process
+- [ ] Create `docs/DEPLOYMENT.md` with step-by-step instructions
+- [ ] Document environment variables needed
+- [ ] Note any gotchas or platform quirks
+- [ ] Save API URL for later use
+
+**Success Criteria:**
+- Backend API is live and accessible
+- Health check endpoint returns 200 OK
+- OpenAPI documentation is accessible
+- Can make test API calls successfully
+- No deployment errors or crashes
+- Docker build works locally
+
+**Key Files to Create:**
+- `backend/Dockerfile`
+- `backend/.dockerignore`
+- `docs/DEPLOYMENT.md` (backend section)
+
+**Note:** At this stage, the API may not have the full ML model yet - that's okay. We're primarily testing that the deployment infrastructure works.
+
+---
+
 ## Phase 7: Frontend Development
 
 **Objective:** Build a beautiful, intuitive web interface
@@ -759,6 +833,85 @@ components/
 
 ---
 
+## Phase 7.5: Early Frontend Deployment
+
+**Objective:** Deploy frontend early to catch Vercel/deployment issues before full integration
+
+**Rationale:** Frontend deployment can have its own set of issues (build errors, environment variables, routing, static assets). Deploying early ensures we catch these when the codebase is manageable.
+
+### Tasks:
+
+#### 7.5.1: Frontend Build Configuration
+- [ ] Verify Next.js build works locally
+  ```bash
+  npm run build
+  npm run start
+  ```
+- [ ] Check for build warnings/errors
+- [ ] Ensure all environment variables are prefixed with `NEXT_PUBLIC_` if needed client-side
+- [ ] Create `.env.local` for local development (if needed)
+- [ ] Add `.env.local` to `.gitignore`
+
+#### 7.5.2: Deploy to Vercel
+- [ ] Create Vercel account (if not already created)
+- [ ] Install Vercel CLI (optional, can use web interface)
+  ```bash
+  npm i -g vercel
+  ```
+- [ ] Connect GitHub repository to Vercel
+- [ ] Configure project settings:
+  - Framework Preset: Next.js (auto-detected)
+  - Root Directory: `frontend/` or `.` (depending on structure)
+  - Build Command: `npm run build` (default)
+  - Output Directory: `.next` (default)
+- [ ] Set environment variables in Vercel dashboard:
+  - `NEXT_PUBLIC_API_URL=https://your-api.railway.app` (from Phase 6.5)
+- [ ] Deploy frontend
+- [ ] Verify deployment:
+  - Site is accessible
+  - Pages load correctly
+  - No runtime errors in browser console
+  - Static assets load properly
+
+#### 7.5.3: Fix Frontend Deployment Issues
+- [ ] Fix any build errors (missing dependencies, TypeScript errors)
+- [ ] Fix environment variable issues
+- [ ] Fix routing issues (if using custom routes)
+- [ ] Fix static asset paths (images, fonts, etc.)
+- [ ] Test on different devices/browsers
+- [ ] Check Vercel build logs for warnings
+
+#### 7.5.4: Test Frontend-Backend Connection
+- [ ] Update API client to use deployed backend URL
+- [ ] Test API calls from deployed frontend
+- [ ] Verify CORS is working correctly
+- [ ] Test error handling (network errors, API errors)
+- [ ] Document any CORS or connection issues
+
+#### 7.5.5: Document Frontend Deployment
+- [ ] Update `docs/DEPLOYMENT.md` with frontend deployment steps
+- [ ] Document environment variables needed
+- [ ] Note Vercel-specific configurations
+- [ ] Save frontend URL for later use
+
+**Success Criteria:**
+- Frontend is live and accessible
+- All pages load without errors
+- Build completes successfully
+- Environment variables are set correctly
+- Frontend can connect to deployed backend API
+- No console errors in browser
+- Mobile responsive (basic check)
+
+**Key Files to Create/Update:**
+- `.env.local` (local development, gitignored)
+- `.env.example` (template for environment variables)
+- `docs/DEPLOYMENT.md` (frontend section)
+
+**Note:** At this stage, the frontend may use mock data or a simplified API connection. The goal is to ensure the deployment pipeline works.
+
+---
+
 ## Phase 8: Integration & Testing
 
 **Objective:** Connect frontend to backend and test end-to-end
@@ -811,49 +964,40 @@ components/
 
 ---
 
-## Phase 9: Deployment
+## Phase 9: Full Integration Deployment
 
-**Objective:** Deploy to production (Vercel + Railway/Render)
+**Objective:** Deploy complete integrated application to production and verify end-to-end functionality
+
+**Note:** Backend and frontend have already been deployed separately in Phases 6.5 and 7.5. This phase focuses on ensuring the full integrated application works correctly in production, updating configurations, and finalizing production settings.
 
 ### Tasks:
 
-#### 9.1: Backend Deployment (Railway/Render)
-- [ ] Create `Dockerfile`
-  ```dockerfile
-  FROM python:3.10-slim
-  
-  WORKDIR /app
-  
-  COPY requirements.txt .
-  RUN pip install --no-cache-dir -r requirements.txt
-  
-  COPY . .
-  
-  CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
-  ```
-- [ ] Create `railway.toml` or `render.yaml`
-- [ ] Set environment variables
+#### 9.1: Update Backend for Production
+- [ ] Update `Dockerfile` if needed (should already exist from Phase 6.5)
+- [ ] Update environment variables to production values
   - `ENVIRONMENT=production`
-  - Any API keys
-- [ ] Deploy backend
-  - Railway: Connect GitHub repo, auto-deploy
-  - Render: Connect GitHub repo, configure build
-- [ ] Test deployed API
-  - Hit `/health` endpoint
-  - Test `/predict` with sample data
-- [ ] Note API URL for frontend
+  - Any API keys or secrets
+- [ ] Ensure model files are included in deployment
+  - Verify `models/injury_risk_model.pkl` is in repository or deployment
+  - Verify `models/scaler.pkl` is included
+- [ ] Test full prediction endpoint with real model
+  - Test `/predict` endpoint with sample data
+  - Verify predictions are returned correctly
+- [ ] Update CORS settings if needed (restrict origins in production)
+- [ ] Verify backend is stable and handling requests correctly
 
-#### 9.2: Frontend Deployment (Vercel)
-- [ ] Create `.env.production`
-  ```
-  NEXT_PUBLIC_API_URL=https://your-api.railway.app
-  ```
-- [ ] Push to GitHub
-- [ ] Connect Vercel to GitHub repo
-- [ ] Configure build settings (auto-detected for Next.js)
-- [ ] Set environment variables in Vercel dashboard
-- [ ] Deploy
-- [ ] Test production site
+#### 9.2: Update Frontend for Production
+- [ ] Update environment variables in Vercel
+  - `NEXT_PUBLIC_API_URL` should point to production backend
+  - Set `NODE_ENV=production`
+- [ ] Verify all API endpoints are correctly configured
+- [ ] Test full user flow in production:
+  - Submit prediction form
+  - Receive results
+  - View recommendations
+- [ ] Check that all components render correctly
+- [ ] Verify charts and visualizations work
+- [ ] Test error handling in production environment
 
 #### 9.3: Domain & SSL (Optional)
 - [ ] Purchase domain (Namecheap, Google Domains)
@@ -870,11 +1014,15 @@ components/
 - [ ] Set up uptime monitoring (UptimeRobot)
 
 **Success Criteria:**
-- Site is live and accessible
-- API is fast (<200ms responses)
-- No CORS issues
-- HTTPS enabled
-- Mobile experience works
+- Full application is live and integrated
+- Frontend successfully communicates with backend API
+- All features work end-to-end in production
+- API responses are fast (<200ms)
+- No CORS issues between frontend and backend
+- HTTPS enabled on both frontend and backend
+- Mobile experience works correctly
+- Error handling works in production
+- Model predictions are accurate and returned correctly
 
 **URLs to Document:**
 - Production site: `https://injury-risk-predictor.vercel.app`
