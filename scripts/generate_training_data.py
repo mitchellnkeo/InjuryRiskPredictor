@@ -253,9 +253,9 @@ class TrainingDataGenerator:
             
             # Random injury event
             if injury_prob > 0 and np.random.random() < injury_prob:
-                df.iloc[i, df.columns.get_loc('injured')] = True
-                df.iloc[i, df.columns.get_loc('injury_type')] = injury_type
-                df.iloc[i, df.columns.get_loc('injury_week')] = week
+                df.at[i, 'injured'] = True
+                df.at[i, 'injury_type'] = injury_type
+                df.at[i, 'injury_week'] = week
         
         return df
     
