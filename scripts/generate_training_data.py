@@ -214,8 +214,8 @@ class TrainingDataGenerator:
         """
         df = df.copy()  # Work on a copy to avoid modifying original
         df['injured'] = False
-        df['injury_type'] = None
-        df['injury_week'] = None
+        df['injury_type'] = 'none'  # 'none' for non-injured (avoids missing values)
+        df['injury_week'] = 0  # 0 for non-injured (avoids missing values)
         
         for i in range(len(df)):
             if df.iloc[i]['injured']:  # Skip if already injured
@@ -332,8 +332,14 @@ class TrainingDataGenerator:
         import os
         os.makedirs(output_dir, exist_ok=True)
         
-        # Save training logs
-        training_logs.to_csv(f'{output_dir}/training_logs.csv', index=False)
+        # Ensure no missing values - injury_type and injury_week should already be filled
+        # Convert injury_week to int (0 for non-injured)
+        training_logs_clean = training_logs.copy()
+        training_logs_clean['injury_week'] = training_logs_clean['injury_week'].fillna(0).astype(int)
+        training_logs_clean['injury_type'] = training_logs_clean['injury_type'].fillna('none')
+        
+        # Save training logs (na_rep='' handles any remaining NaN as empty strings)
+        training_logs_clean.to_csv(f'{output_dir}/training_logs.csv', index=False, na_rep='')
         
         # Save athlete metadata
         athlete_profiles.to_csv(f'{output_dir}/athlete_metadata.csv', index=False)
