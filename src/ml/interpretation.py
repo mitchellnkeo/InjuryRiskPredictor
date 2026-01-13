@@ -19,7 +19,7 @@ except ImportError:
 
 
 def plot_feature_importance(model, feature_names: List[str], top_n: int = 15,
-                           save_path: Optional[str] = None) -> pd.DataFrame:
+                           save_path: Optional[str] = None, show: bool = True) -> pd.DataFrame:
     """
     Plot feature importance for tree-based models or coefficients for linear models.
     
@@ -28,6 +28,7 @@ def plot_feature_importance(model, feature_names: List[str], top_n: int = 15,
         feature_names: List of feature names
         top_n: Number of top features to display
         save_path: Path to save figure (optional)
+        show: Whether to display the plot (default: True for notebooks)
     
     Returns:
         DataFrame with feature importance/coefficients
@@ -65,7 +66,10 @@ def plot_feature_importance(model, feature_names: List[str], top_n: int = 15,
         plt.savefig(save_path, dpi=300, bbox_inches='tight')
         print(f"✓ Saved feature importance plot to {save_path}")
     
-    plt.close()
+    if show:
+        plt.show()
+    else:
+        plt.close()
     
     return importance_df
 
@@ -114,7 +118,7 @@ def calculate_shap_values(model, X: pd.DataFrame, max_samples: int = 100) -> Opt
 
 
 def plot_shap_summary(shap_values, X: pd.DataFrame, top_n: int = 15,
-                      save_path: Optional[str] = None):
+                      save_path: Optional[str] = None, show: bool = True):
     """
     Plot SHAP summary plot.
     
@@ -123,6 +127,7 @@ def plot_shap_summary(shap_values, X: pd.DataFrame, top_n: int = 15,
         X: Feature matrix
         top_n: Number of top features to display
         save_path: Path to save figure (optional)
+        show: Whether to display the plot (default: True for notebooks)
     """
     if not HAS_SHAP:
         print("SHAP not available")
@@ -130,21 +135,22 @@ def plot_shap_summary(shap_values, X: pd.DataFrame, top_n: int = 15,
     
     try:
         plt.figure(figsize=(10, 8))
-        shap.summary_plot(shap_values, X, max_display=top_n, show=False)
+        shap.summary_plot(shap_values, X, max_display=top_n, show=show)
         
         if save_path:
             os.makedirs(os.path.dirname(save_path), exist_ok=True)
             plt.savefig(save_path, dpi=300, bbox_inches='tight')
             print(f"✓ Saved SHAP summary plot to {save_path}")
         
-        plt.close()
+        if not show:
+            plt.close()
     except Exception as e:
         print(f"Error plotting SHAP summary: {e}")
 
 
 def plot_partial_dependence(model, X: pd.DataFrame, feature_name: str,
                            feature_range: Optional[Tuple[float, float]] = None,
-                           n_points: int = 50, save_path: Optional[str] = None):
+                           n_points: int = 50, save_path: Optional[str] = None, show: bool = True):
     """
     Plot partial dependence for a single feature.
     
@@ -157,6 +163,7 @@ def plot_partial_dependence(model, X: pd.DataFrame, feature_name: str,
         feature_range: (min, max) range for feature (auto-detected if None)
         n_points: Number of points to evaluate
         save_path: Path to save figure (optional)
+        show: Whether to display the plot (default: True for notebooks)
     """
     if feature_name not in X.columns:
         raise ValueError(f"Feature '{feature_name}' not found in data")
@@ -205,7 +212,10 @@ def plot_partial_dependence(model, X: pd.DataFrame, feature_name: str,
         plt.savefig(save_path, dpi=300, bbox_inches='tight')
         print(f"✓ Saved partial dependence plot to {save_path}")
     
-    plt.close()
+    if show:
+        plt.show()
+    else:
+        plt.close()
 
 
 def analyze_errors(y_true: np.ndarray, y_pred: np.ndarray, X: pd.DataFrame,
