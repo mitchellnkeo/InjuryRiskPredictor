@@ -4,6 +4,33 @@
 
 This Build Journal serves as a daily log of development progress, capturing key technical decisions, implementations, and learnings from each day's work on the Injury Risk Predictor project.
 
+## Completion & Transfer Status
+
+When a day's journal entry is complete and ready to be transferred to Google Drive:
+
+1. **Add status marker at the top:**
+   ```markdown
+   **Status:** ✅ COMPLETE - Ready for Google Drive Transfer
+   ```
+
+2. **Add transfer status section at the bottom:**
+   ```markdown
+   ## Transfer Status
+   
+   ✅ **READY FOR GOOGLE DRIVE TRANSFER**
+   
+   This journal entry is complete and ready to be copied into Google Drive.
+   [Summary of what's included]
+   
+   **Date Completed:** [Date]
+   **Phases Completed:** [List phases]
+   **Total Commits Documented:** [Number]
+   ```
+
+3. **After transferring to Google Drive:**
+   - You can optionally update the status to "✅ TRANSFERRED" or leave as is
+   - The markdown file remains as the source of truth
+
 ## File Structure
 
 ### Daily Files
