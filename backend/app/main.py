@@ -74,7 +74,7 @@ async def health_check():
             version="1.0.0"
         )
     except Exception as e:
-        logger.error(f"Health check failed: {e}")
+        logger.error(f"Health check failed: {e}", exc_info=True)
         return HealthResponse(
             status="unhealthy",
             model_loaded=False,

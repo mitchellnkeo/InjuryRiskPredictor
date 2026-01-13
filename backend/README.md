@@ -19,12 +19,17 @@ pip install -r requirements.txt
 
 ### Development Server
 ```bash
+python3 -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+```
+
+Or if uvicorn is in your PATH:
+```bash
 uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
 ### Production Server
 ```bash
-uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 4
+python3 -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 4
 ```
 
 ## API Endpoints

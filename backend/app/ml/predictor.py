@@ -260,3 +260,15 @@ class InjuryPredictor:
             info["max_depth"] = self.model.max_depth
         
         return info
+
+
+# Singleton instance
+_predictor_instance: InjuryPredictor = None
+
+
+def get_predictor() -> InjuryPredictor:
+    """Get or create predictor instance (singleton pattern)."""
+    global _predictor_instance
+    if _predictor_instance is None:
+        _predictor_instance = InjuryPredictor()
+    return _predictor_instance

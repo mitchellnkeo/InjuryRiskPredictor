@@ -7,22 +7,11 @@ from typing import List
 import logging
 
 from ..models import PredictionRequest, PredictionResponse, ModelInfoResponse
-from ..ml.predictor import InjuryPredictor
+from ..ml.predictor import get_predictor
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api", tags=["predictions"])
-
-# Initialize predictor (singleton pattern)
-_predictor: InjuryPredictor = None
-
-
-def get_predictor() -> InjuryPredictor:
-    """Get or create predictor instance."""
-    global _predictor
-    if _predictor is None:
-        _predictor = InjuryPredictor()
-    return _predictor
 
 
 @router.post("/predict", response_model=PredictionResponse)
