@@ -36,16 +36,20 @@ async def predict_injury_risk(request: PredictionRequest):
         athlete_dict = request.athlete.dict()
         training_list = [week.dict() for week in request.training_history]
         
+        logger.info(f"Making prediction for athlete age={athlete_dict['age']}, weeks={len(training_list)}")
+        
         # Make prediction
         result = predictor.predict(training_list, athlete_dict)
+        
+        logger.info(f"Prediction successful: risk_level={result['risk_level']}, risk_score={result['risk_score']:.3f}")
         
         return PredictionResponse(**result)
         
     except ValueError as e:
-        logger.error(f"Validation error: {e}")
+        logger.error(f"Validation error: {e}", exc_info=True)
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
-        logger.error(f"Prediction error: {e}")
+        logger.error(f"Prediction error: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Prediction failed: {str(e)}")
 
 
