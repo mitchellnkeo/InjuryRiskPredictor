@@ -26,12 +26,11 @@ print("=" * 60)
 # Load data
 print("\n1. Loading data...")
 training_logs = pd.read_csv('data/training_logs.csv')
-athlete_metadata = pd.read_csv('data/athlete_metadata.csv')
 print(f"   ✓ Loaded {len(training_logs)} training records")
 
 # Engineer features
 print("\n2. Engineering features...")
-df = engineer_features_for_dataset(training_logs, athlete_metadata)
+df = engineer_features_for_dataset(training_logs)
 print(f"   ✓ Engineered features: {df.shape[1]} features")
 
 # Preprocessing
