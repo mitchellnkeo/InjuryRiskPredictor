@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: injury-risk-api
+    env: docker
+    dockerfilePath: backend/Dockerfile
+    dockerContext: .
+    plan: free
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+    healthCheckPath: /health

@@ -30,14 +30,22 @@ app = FastAPI(
 )
 
 # Configure CORS
+# Allow localhost for development and production frontend URL
+# Production URL should be set via CORS_ORIGINS environment variable
+import os
+cors_origins = [
+    "http://localhost:3000",  # Next.js dev server
+    "http://localhost:3001",
+    "http://127.0.0.1:3000",
+]
+
+# Add production frontend URL from environment variable if set
+if os.getenv("CORS_ORIGINS"):
+    cors_origins.extend(os.getenv("CORS_ORIGINS").split(","))
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",  # Next.js dev server
-        "http://localhost:3001",
-        "http://127.0.0.1:3000",
-        # Add production frontend URL here when deployed
-    ],
+    allow_origins=cors_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
