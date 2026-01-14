@@ -108,24 +108,50 @@ This guide covers deploying both the backend API and frontend application.
 
 ---
 
-### Testing Docker Build Locally
+### Testing Docker Build Locally (Optional)
 
-Before deploying, test the Docker build locally:
+**Note:** Docker is optional for local testing. You can deploy directly to Railway/Render without Docker installed locally - they will build the Docker image for you.
 
-```bash
-# Build the image (from project root)
-docker build -t injury-api -f backend/Dockerfile .
+If you want to test the Docker build locally first:
 
-# Run the container
-docker run -p 8000:8000 -e PORT=8000 injury-api
+#### Install Docker Desktop (macOS)
 
-# Test health endpoint
-curl http://localhost:8000/health
-```
+1. **Download Docker Desktop:**
+   - Visit https://www.docker.com/products/docker-desktop/
+   - Download Docker Desktop for Mac (Apple Silicon or Intel)
+   - Install the `.dmg` file
+
+2. **Start Docker Desktop:**
+   - Open Docker Desktop from Applications
+   - Wait for it to start (whale icon in menu bar)
+   - Verify installation:
+     ```bash
+     docker --version
+     ```
+
+3. **Test Docker Build:**
+   ```bash
+   # Build the image (from project root)
+   docker build -t injury-api -f backend/Dockerfile .
+
+   # Run the container
+   docker run -p 8000:8000 -e PORT=8000 injury-api
+
+   # Test health endpoint (in another terminal)
+   curl http://localhost:8000/health
+   ```
 
 **Note:** The Dockerfile expects to be built from the project root, not from the `backend/` directory. This is because it needs access to both `backend/` and `src/` directories.
 
 **Note:** Make sure you have model files (`random_forest_model.pkl` and `scaler.pkl`) in `backend/models/` before building.
+
+#### Skip Local Testing
+
+If you don't want to install Docker locally, you can:
+1. Deploy directly to Railway/Render
+2. They will build the Docker image automatically
+3. Check deployment logs for any build errors
+4. Test the deployed API instead
 
 ---
 

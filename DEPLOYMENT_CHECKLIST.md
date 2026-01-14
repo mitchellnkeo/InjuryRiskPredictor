@@ -105,11 +105,20 @@ Use this checklist to ensure everything is ready for deployment.
 
 ## Testing Commands
 
-### Test Docker Build Locally
+### Test Docker Build Locally (Optional)
+
+**Note:** Docker is optional. Railway/Render will build the Docker image automatically when you deploy.
+
+If Docker is installed:
 ```bash
 cd backend
 ./test_docker.sh
 ```
+
+**To install Docker Desktop (macOS):**
+1. Download from https://www.docker.com/products/docker-desktop/
+2. Install and start Docker Desktop
+3. Verify: `docker --version`
 
 ### Test Backend Health
 ```bash

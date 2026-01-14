@@ -84,18 +84,24 @@ CORS_ORIGINS=https://your-app.vercel.app
 
 ---
 
-## Test Locally First
+## Test Locally First (Optional)
 
-```bash
-# Test Docker build
-cd backend
-./test_docker.sh
+**Note:** Docker is optional. You can deploy directly to Railway/Render without Docker installed - they build the image for you.
 
-# Or manually:
-cd ..
-docker build -t injury-api -f backend/Dockerfile .
-docker run -p 8000:8000 -e PORT=8000 injury-api
-```
+If you want to test locally:
+
+1. **Install Docker Desktop:**
+   - Download from https://www.docker.com/products/docker-desktop/
+   - Install and start Docker Desktop
+
+2. **Test Docker build:**
+   ```bash
+   # From project root
+   docker build -t injury-api -f backend/Dockerfile .
+   docker run -p 8000:8000 -e PORT=8000 injury-api
+   ```
+
+**Or skip local testing and deploy directly** - Railway/Render will build the Docker image automatically.
 
 ---
 
